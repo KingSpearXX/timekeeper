@@ -2,22 +2,28 @@
   <div class="dashboard-layout">
     <!-- Mobile Header -->
     <header class="mobile-header">
-      <button @click="toggleMobileMenu" class="menu-toggle" aria-label="Toggle menu">
+      <button
+        @click="toggleMobileMenu"
+        class="menu-toggle"
+        aria-label="Toggle menu"
+      >
         <svg class="menu-icon" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
         </svg>
       </button>
       <h1 class="mobile-title">TimeKeeper</h1>
       <button @click="authStore.logout" class="mobile-logout">
         <svg class="logout-icon" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+          <path
+            d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
+          />
         </svg>
       </button>
     </header>
 
     <!-- Mobile Drawer Overlay -->
-    <div 
-      v-if="isMobileMenuOpen" 
+    <div
+      v-if="isMobileMenuOpen"
       class="mobile-overlay"
       @click="toggleMobileMenu"
     ></div>
@@ -26,32 +32,36 @@
     <aside class="sidebar" :class="{ 'mobile-open': isMobileMenuOpen }">
       <div class="sidebar-header">
         <h2 class="sidebar-title">TimeKeeper</h2>
-        <p class="sidebar-subtitle">Welcome, {{ authStore.user.value?.first_name }}!</p>
+        <p class="sidebar-subtitle">
+          Welcome, {{ authStore.user.value?.first_name }}!
+        </p>
       </div>
-      
+
       <nav class="sidebar-nav">
-        <a 
-          v-for="item in menuItems" 
+        <a
+          v-for="item in menuItems"
           :key="item.name"
           href="#"
           class="nav-item"
-          :class="{ 'active': item.name === currentPage }"
+          :class="{ active: item.name === currentPage }"
           @click.prevent="setCurrentPage(item.name)"
         >
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path :d="item.icon"/>
+            <path :d="item.icon" />
           </svg>
           <span class="nav-text">{{ item.name }}</span>
         </a>
-        
+
         <!-- Sign Out Menu Item -->
-        <a 
+        <a
           href="#"
           class="nav-item nav-item-signout"
           @click.prevent="authStore.logout"
         >
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+            <path
+              d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
+            />
           </svg>
           <span class="nav-text">Sign Out</span>
         </a>
@@ -64,56 +74,69 @@
         <h1 class="page-title">{{ currentPage }}</h1>
         <p class="page-subtitle">{{ getPageSubtitle() }}</p>
       </div>
-      
+
       <div class="content-body">
         <!-- Dashboard Content -->
         <!-- Dashboard Content -->
         <div v-if="currentPage === 'Dashboard'" class="dashboard-content">
           <!-- Loading State for Dashboard -->
-          <LoadingSpinner 
-            v-if="isLoading" 
-            text="Loading dashboard data..." 
+          <LoadingSpinner
+            v-if="isLoading"
+            text="Loading dashboard data..."
             size="medium"
             :fullscreen="false"
           />
-          
+
           <!-- Dashboard Grid -->
           <div v-else class="dashboard-grid">
             <!-- Quick Actions -->
             <div class="card">
               <h3 class="card-title">Quick Actions</h3>
               <div class="quick-actions">
-                <button 
-                  @click="handleClockAction" 
+                <button
+                  @click="handleClockAction"
                   :class="['action-button', clockButtonClass]"
                   :disabled="isLoading"
                 >
-                  <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/>
+                  <svg
+                    class="action-icon"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"
+                    />
                   </svg>
-                  {{ isLoading ? 'Loading...' : clockButtonText }}
+                  {{ isLoading ? "Loading..." : clockButtonText }}
                 </button>
               </div>
             </div>
-            
+
             <!-- Today's Summary & Status -->
             <div class="card">
               <h3 class="card-title">Today's Summary & Status</h3>
-              
+
               <!-- Current Status -->
               <div class="status-section">
                 <div class="status-indicator">
                   <div :class="['status-dot', currentStatus.statusClass]"></div>
-                  <span class="status-text">{{ isLoading ? 'Loading...' : currentStatus.status }}</span>
+                  <span class="status-text">{{
+                    isLoading ? "Loading..." : currentStatus.status
+                  }}</span>
                 </div>
-                <p class="status-time">Last activity: {{ isLoading ? '...' : currentStatus.lastActivity }}</p>
+                <p class="status-time">
+                  Last activity:
+                  {{ isLoading ? "..." : currentStatus.lastActivity }}
+                </p>
               </div>
 
               <!-- Today's Stats -->
               <div class="summary-stats">
                 <div class="stat">
                   <span class="stat-label">Hours Worked Today</span>
-                  <span class="stat-value">{{ isLoading ? '...' : todayStats.hoursWorked }}</span>
+                  <span class="stat-value">{{
+                    isLoading ? "..." : todayStats.hoursWorked
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -123,16 +146,18 @@
           <div class="time-logs-section">
             <h3 class="section-title">Recent Time Logs</h3>
             <div class="table-card">
-              <LoadingSpinner 
-                v-if="isLoading" 
-                text="Loading time logs..." 
+              <LoadingSpinner
+                v-if="isLoading"
+                text="Loading time logs..."
                 size="small"
                 :fullscreen="false"
               />
-              
+
               <div v-else-if="paginatedLogs.length === 0" class="table-empty">
                 <svg class="empty-icon" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/>
+                  <path
+                    d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"
+                  />
                 </svg>
                 <h4>No Time Logs Found</h4>
                 <p>Start tracking your time by clicking "Clock In" above.</p>
@@ -150,14 +175,25 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(log, index) in paginatedLogs" :key="log.id" :class="getRowClass(log, index)">
+                    <tr
+                      v-for="(log, index) in paginatedLogs"
+                      :key="log.id"
+                      :class="getRowClass(log, index)"
+                    >
                       <td>{{ formatDayAndDate(log.time_in) }}</td>
                       <td>{{ formatTime(log.time_in) }}</td>
-                      <td>{{ log.time_out ? formatTime(log.time_out) : 'Active' }}</td>
+                      <td>
+                        {{ log.time_out ? formatTime(log.time_out) : "Active" }}
+                      </td>
                       <td>{{ calculateSessionDuration(log) }}</td>
                       <td>
-                        <span :class="['status-badge', log.time_out ? 'completed' : 'active']">
-                          {{ log.time_out ? 'Completed' : 'In Progress' }}
+                        <span
+                          :class="[
+                            'status-badge',
+                            log.time_out ? 'completed' : 'active',
+                          ]"
+                        >
+                          {{ log.time_out ? "Completed" : "In Progress" }}
                         </span>
                       </td>
                     </tr>
@@ -166,20 +202,23 @@
 
                 <!-- Pagination -->
                 <div v-if="totalPages > 1" class="pagination">
-                  <button 
-                    @click="currentPageNum = currentPageNum - 1" 
+                  <button
+                    @click="currentPageNum = currentPageNum - 1"
                     :disabled="currentPageNum === 1"
                     class="pagination-btn"
                   >
                     Previous
                   </button>
-                  
+
                   <span class="pagination-info">
-                    Page {{ currentPageNum }} of {{ totalPages }} ({{ allTimeLogs.length }} total logs)
+                    Page {{ currentPageNum }} of {{ totalPages }} ({{
+                      allTimeLogs.length
+                    }}
+                    total logs)
                   </span>
-                  
-                  <button 
-                    @click="currentPageNum = currentPageNum + 1" 
+
+                  <button
+                    @click="currentPageNum = currentPageNum + 1"
                     :disabled="currentPageNum === totalPages"
                     class="pagination-btn"
                   >
@@ -194,16 +233,25 @@
         <!-- Schedule Content -->
         <!-- Schedule Content -->
         <div v-else-if="currentPage === 'Schedule'" class="schedule-content">
-          <LoadingSpinner 
-            v-if="isLoadingSchedules" 
-            text="Loading schedule..." 
+          <LoadingSpinner
+            v-if="isLoadingSchedules"
+            text="Loading schedule..."
             size="medium"
             :fullscreen="false"
           />
-          
-          <div v-else-if="userSchedules.length === 0" class="placeholder-content">
-            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+
+          <div
+            v-else-if="userSchedules.length === 0"
+            class="placeholder-content"
+          >
+            <svg
+              class="placeholder-icon"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+              />
             </svg>
             <h3>No Schedule Found</h3>
             <p>No work schedule has been assigned to your account</p>
@@ -216,31 +264,54 @@
               <div class="summary-stats">
                 <div class="stat">
                   <span class="stat-label">Total Scheduled Hours</span>
-                  <span class="stat-value">{{ schedulesService.calculateWeeklyHours(userSchedules).toFixed(1) }}h</span>
+                  <span class="stat-value"
+                    >{{
+                      schedulesService
+                        .calculateWeeklyHours(userSchedules)
+                        .toFixed(1)
+                    }}h</span
+                  >
                 </div>
                 <div class="stat">
                   <span class="stat-label">Working Days</span>
-                  <span class="stat-value">{{ userSchedules.length }} days</span>
+                  <span class="stat-value"
+                    >{{ userSchedules.length }} days</span
+                  >
                 </div>
               </div>
             </div>
 
             <!-- Daily Schedule Cards -->
-            <div v-for="schedule in userSchedules" :key="schedule.id" class="card schedule-day-card">
-              <h4 class="day-title">{{ schedulesService.formatDayName(schedule.day_of_week) }}</h4>
+            <div
+              v-for="schedule in userSchedules"
+              :key="schedule.id"
+              class="card schedule-day-card"
+            >
+              <h4 class="day-title">
+                {{ schedulesService.formatDayName(schedule.day_of_week) }}
+              </h4>
               <div class="time-range">
                 <div class="time-block">
                   <span class="time-label">Start</span>
-                  <span class="time-value">{{ schedulesService.formatTime(schedule.time_start) }}</span>
+                  <span class="time-value">{{
+                    schedulesService.formatTime(schedule.time_start)
+                  }}</span>
                 </div>
                 <div class="time-separator">→</div>
                 <div class="time-block">
                   <span class="time-label">End</span>
-                  <span class="time-value">{{ schedulesService.formatTime(schedule.time_end) }}</span>
+                  <span class="time-value">{{
+                    schedulesService.formatTime(schedule.time_end)
+                  }}</span>
                 </div>
               </div>
               <div class="day-hours">
-                {{ schedulesService.calculateDayHours(schedule.time_start, schedule.time_end).toFixed(1) }} hours
+                {{
+                  schedulesService
+                    .calculateDayHours(schedule.time_start, schedule.time_end)
+                    .toFixed(1)
+                }}
+                hours
               </div>
             </div>
           </div>
@@ -249,20 +320,29 @@
         <!-- Wallet Content -->
         <div v-else-if="currentPage === 'Wallet'" class="wallet-content">
           <!-- Loading State -->
-          <LoadingSpinner 
-            v-if="isLoadingWallet" 
-            text="Loading wallet data..." 
+          <LoadingSpinner
+            v-if="isLoadingWallet"
+            text="Loading wallet data..."
             size="medium"
             :fullscreen="false"
           />
 
           <!-- No Employee Profile -->
           <div v-else-if="!hasEmployeeProfile" class="placeholder-content">
-            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            <svg
+              class="placeholder-icon"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+              />
             </svg>
             <h3>No Employee Profile Found</h3>
-            <p>Your employee profile has not been set up yet. Please contact your administrator to access wallet features.</p>
+            <p>
+              Your employee profile has not been set up yet. Please contact your
+              administrator to access wallet features.
+            </p>
           </div>
 
           <!-- Wallet Dashboard -->
@@ -282,15 +362,21 @@
               <div class="card actions-card">
                 <h3 class="card-title">Quick Actions</h3>
                 <div class="wallet-actions">
-                  <button 
-                    @click="showWithdrawModal = true" 
+                  <button
+                    @click="showWithdrawModal = true"
                     :disabled="currentWalletBalance <= 0"
                     class="action-button primary"
                   >
-                    <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M19 14V6c0-1.1-.9-2-2-2H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-9-1c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm13-6v11c0 1.1-.9 2-2 2H4v-2h17V7h2z"/>
+                    <svg
+                      class="action-icon"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M19 14V6c0-1.1-.9-2-2-2H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-9-1c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm13-6v11c0 1.1-.9 2-2 2H4v-2h17V7h2z"
+                      />
                     </svg>
-                    {{ currentWalletBalance <= 0 ? 'No Balance' : 'Withdraw' }}
+                    {{ currentWalletBalance <= 0 ? "No Balance" : "Withdraw" }}
                   </button>
                 </div>
               </div>
@@ -300,19 +386,31 @@
             <div class="wallet-logs-section">
               <h3 class="section-title">Transaction History</h3>
               <div class="table-card">
-                <LoadingSpinner 
-                  v-if="isLoadingWalletLogs" 
-                  text="Loading transaction history..." 
+                <LoadingSpinner
+                  v-if="isLoadingWalletLogs"
+                  text="Loading transaction history..."
                   size="small"
                   :fullscreen="false"
                 />
-                
-                <div v-else-if="paginatedWalletLogs.length === 0" class="table-empty">
-                  <svg class="empty-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+
+                <div
+                  v-else-if="paginatedWalletLogs.length === 0"
+                  class="table-empty"
+                >
+                  <svg
+                    class="empty-icon"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"
+                    />
                   </svg>
                   <h4>No Transactions Found</h4>
-                  <p>Your transaction history will appear here once you start earning.</p>
+                  <p>
+                    Your transaction history will appear here once you start
+                    earning.
+                  </p>
                 </div>
 
                 <div v-else class="table-container">
@@ -328,8 +426,12 @@
                       <tr v-for="log in paginatedWalletLogs" :key="log.id">
                         <td>
                           <div class="date-time">
-                            <div class="date">{{ walletService.formatDate(log.date_created) }}</div>
-                            <div class="time">{{ walletService.formatTime(log.date_created) }}</div>
+                            <div class="date">
+                              {{ walletService.formatDate(log.date_created) }}
+                            </div>
+                            <div class="time">
+                              {{ walletService.formatTime(log.date_created) }}
+                            </div>
                           </div>
                         </td>
                         <td>
@@ -339,7 +441,7 @@
                         </td>
                         <td>
                           <span class="remarks">
-                            {{ log.remarks || '-' }}
+                            {{ log.remarks || "-" }}
                           </span>
                         </td>
                       </tr>
@@ -348,21 +450,27 @@
 
                   <!-- Pagination -->
                   <div v-if="walletTotalPages > 1" class="pagination">
-                    <button 
-                      @click="goToWalletPage(currentWalletPage - 1)" 
+                    <button
+                      @click="goToWalletPage(currentWalletPage - 1)"
                       :disabled="currentWalletPage === 1 || isLoadingWalletLogs"
                       class="pagination-btn"
                     >
                       Previous
                     </button>
-                    
+
                     <span class="pagination-info">
-                      Page {{ currentWalletPage }} of {{ walletTotalPages }} ({{ walletTotalCount }} total transactions)
+                      Page {{ currentWalletPage }} of {{ walletTotalPages }} ({{
+                        walletTotalCount
+                      }}
+                      total transactions)
                     </span>
-                    
-                    <button 
-                      @click="goToWalletPage(currentWalletPage + 1)" 
-                      :disabled="currentWalletPage === walletTotalPages || isLoadingWalletLogs"
+
+                    <button
+                      @click="goToWalletPage(currentWalletPage + 1)"
+                      :disabled="
+                        currentWalletPage === walletTotalPages ||
+                        isLoadingWalletLogs
+                      "
                       class="pagination-btn"
                     >
                       Next
@@ -374,31 +482,39 @@
           </div>
 
           <!-- Withdraw Modal -->
-          <div v-if="showWithdrawModal" class="modal-overlay" @click="closeWithdrawModal">
+          <div
+            v-if="showWithdrawModal"
+            class="modal-overlay"
+            @click="closeWithdrawModal"
+          >
             <div class="modal-content" @click.stop>
               <div class="modal-header">
                 <h3>Withdraw Funds</h3>
                 <button @click="closeWithdrawModal" class="modal-close">
                   <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    <path
+                      d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                    />
                   </svg>
                 </button>
               </div>
-              
+
               <div class="modal-body">
                 <div class="current-balance">
                   <span class="balance-label">Available Balance:</span>
-                  <span class="balance-amount">{{ walletService.formatCurrency(currentWalletBalance) }}</span>
+                  <span class="balance-amount">{{
+                    walletService.formatCurrency(currentWalletBalance)
+                  }}</span>
                 </div>
 
                 <div class="form-group">
                   <label for="withdraw-amount">Withdrawal Amount</label>
                   <div class="input-with-prefix">
                     <span class="input-prefix">₱</span>
-                    <input 
+                    <input
                       id="withdraw-amount"
-                      v-model="withdrawAmount" 
-                      type="number" 
+                      v-model="withdrawAmount"
+                      type="number"
                       step="0.01"
                       min="0"
                       :max="currentWalletBalance"
@@ -406,24 +522,31 @@
                       placeholder="0.00"
                       @input="validateWithdrawAmount"
                     />
+                    <select
+                      id="withdraw-type"
+                      v-model="withdrawType"
+                      class="form-input currency-select"
+                    >
+                      <option value="manual">CASH</option>
+                      <option value="ewallet" selected>EWALLET</option>
+                    </select>
                   </div>
                   <div v-if="withdrawError" class="error-message">
                     {{ withdrawError }}
                   </div>
                 </div>
-
               </div>
 
               <div class="modal-footer">
                 <button @click="closeWithdrawModal" class="btn secondary">
                   Cancel
                 </button>
-                <button 
-                  @click="processWithdraw" 
+                <button
+                  @click="processWithdraw"
                   :disabled="!isWithdrawValid || isProcessingWithdraw"
                   class="btn primary"
                 >
-                  {{ isProcessingWithdraw ? 'Processing...' : 'Withdraw' }}
+                  {{ isProcessingWithdraw ? "Processing..." : "Withdraw" }}
                 </button>
               </div>
             </div>
@@ -435,487 +558,519 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import { timeLogsService } from '@/services/timeLogs'
-import { schedulesService } from '@/services/schedules'
-import { walletService } from '@/services/wallet'
-import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import { ref, reactive, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
+import { timeLogsService } from "@/services/timeLogs";
+import { schedulesService } from "@/services/schedules";
+import { walletService } from "@/services/wallet";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
-const router = useRouter()
-const authStore = useAuthStore()
+const router = useRouter();
+const authStore = useAuthStore();
 
 // Mobile menu state
-const isMobileMenuOpen = ref(false)
-const currentPage = ref('Dashboard')
+const isMobileMenuOpen = ref(false);
+const currentPage = ref("Dashboard");
 
 // Time tracking state
-const isLoading = ref(true)
-const allTimeLogs = ref([])
-const currentPageNum = ref(1)
-const itemsPerPage = 8
+const isLoading = ref(true);
+const allTimeLogs = ref([]);
+const currentPageNum = ref(1);
+const itemsPerPage = 8;
 
 const currentStatus = ref({
   isClockedIn: false,
-  status: 'Clocked Out',
-  lastActivity: 'Never',
-  statusClass: 'clocked-out'
-})
+  status: "Clocked Out",
+  lastActivity: "Never",
+  statusClass: "clocked-out",
+});
 const todayStats = ref({
-  hoursWorked: '0.00'
-})
+  hoursWorked: "0.00",
+});
 
 // Schedule state
-const userSchedules = ref([])
-const isLoadingSchedules = ref(false)
+const userSchedules = ref([]);
+const isLoadingSchedules = ref(false);
 
 // Wallet state
-const isLoadingWallet = ref(false)
-const isLoadingWalletLogs = ref(false)
-const hasEmployeeProfile = ref(false)
-const currentWalletBalance = ref(0)
-const allWalletLogs = ref([])
-const currentWalletPage = ref(1)
-const walletItemsPerPage = 10
-const walletTotalCount = ref(0)
+const isLoadingWallet = ref(false);
+const isLoadingWalletLogs = ref(false);
+const hasEmployeeProfile = ref(false);
+const currentWalletBalance = ref(0);
+const allWalletLogs = ref([]);
+const currentWalletPage = ref(1);
+const walletItemsPerPage = 10;
+const walletTotalCount = ref(0);
 
 // Withdraw modal state
-const showWithdrawModal = ref(false)
-const withdrawAmount = ref('')
-const withdrawReason = ref('')
-const withdrawError = ref('')
-const isProcessingWithdraw = ref(false)
+const showWithdrawModal = ref(false);
+const withdrawAmount = ref("");
+const withdrawType = ref("ewallet"); // 'ewallet' or 'manual'
+const withdrawReason = ref("");
+const withdrawError = ref("");
+const isProcessingWithdraw = ref(false);
 
 // Menu items with icons
 const menuItems = reactive([
   {
-    name: 'Dashboard',
-    icon: 'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z'
+    name: "Dashboard",
+    icon: "M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z",
   },
   {
-    name: 'Schedule',
-    icon: 'M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z'
+    name: "Schedule",
+    icon: "M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z",
   },
   {
-    name: 'Wallet',
-    icon: 'M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z'
+    name: "Wallet",
+    icon: "M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z",
   },
   {
-    name: 'Profile',
-    icon: 'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'
-  }
-])
+    name: "Profile",
+    icon: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z",
+  },
+]);
 
 // Computed properties
 const clockButtonText = computed(() => {
-  return currentStatus.value.isClockedIn ? 'Clock Out' : 'Clock In'
-})
+  return currentStatus.value.isClockedIn ? "Clock Out" : "Clock In";
+});
 
 const clockButtonClass = computed(() => {
-  return currentStatus.value.isClockedIn ? 'secondary' : 'primary'
-})
+  return currentStatus.value.isClockedIn ? "secondary" : "primary";
+});
 
 // Pagination computed properties
 const totalPages = computed(() => {
-  return Math.ceil(allTimeLogs.value.length / itemsPerPage)
-})
+  return Math.ceil(allTimeLogs.value.length / itemsPerPage);
+});
 
 const paginatedLogs = computed(() => {
-  const start = (currentPageNum.value - 1) * itemsPerPage
-  const end = start + itemsPerPage
-  return allTimeLogs.value.slice(start, end)
-})
+  const start = (currentPageNum.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return allTimeLogs.value.slice(start, end);
+});
 
 // Wallet computed properties
 const walletTotalPages = computed(() => {
-  return Math.ceil(walletTotalCount.value / walletItemsPerPage)
-})
+  return Math.ceil(walletTotalCount.value / walletItemsPerPage);
+});
 
 const paginatedWalletLogs = computed(() => {
   // Since we're fetching paginated data from the server,
   // we return the data as-is from the API
-  return allWalletLogs.value
-})
+  return allWalletLogs.value;
+});
 
 const isWithdrawValid = computed(() => {
-  const validation = walletService.validateWithdrawAmount(withdrawAmount.value, currentWalletBalance.value)
-  return validation.valid && !withdrawError.value
-})
+  const validation = walletService.validateWithdrawAmount(
+    withdrawAmount.value,
+    currentWalletBalance.value
+  );
+  return validation.valid && !withdrawError.value;
+});
 
 // Methods
 const toggleMobileMenu = () => {
-  isMobileMenuOpen.value = !isMobileMenuOpen.value
-}
+  isMobileMenuOpen.value = !isMobileMenuOpen.value;
+};
 
 const setCurrentPage = (page) => {
-  if (page === 'Profile') {
+  if (page === "Profile") {
     // Route to the dedicated Profile page
-    router.push('/profile')
-    isMobileMenuOpen.value = false
-    return
+    router.push("/profile");
+    isMobileMenuOpen.value = false;
+    return;
   }
-  
-  currentPage.value = page
-  isMobileMenuOpen.value = false
-  
+
+  currentPage.value = page;
+  isMobileMenuOpen.value = false;
+
   // Load specific page data
-  if (page === 'Schedule') {
-    loadUserSchedules()
-  } else if (page === 'Wallet') {
+  if (page === "Schedule") {
+    loadUserSchedules();
+  } else if (page === "Wallet") {
     // Reset wallet pagination when switching to wallet page
-    currentWalletPage.value = 1
-    loadWalletData()
+    currentWalletPage.value = 1;
+    loadWalletData();
   }
-}
+};
 
 const getPageSubtitle = () => {
   const subtitles = {
-    'Dashboard': 'Overview of your time tracking activity',
-    'Schedule': 'View and manage your work schedule',
-    'Wallet': 'Track your earnings and payments'
-  }
-  return subtitles[currentPage.value] || ''
-}
+    Dashboard: "Overview of your time tracking activity",
+    Schedule: "View and manage your work schedule",
+    Wallet: "Track your earnings and payments",
+  };
+  return subtitles[currentPage.value] || "";
+};
 
 // Table formatting methods
 const formatDayAndDate = (dateString) => {
-  const date = new Date(dateString)
-  const today = new Date()
-  const yesterday = new Date(today)
-  yesterday.setDate(yesterday.getDate() - 1)
-  
-  const isToday = date.toDateString() === today.toDateString()
-  const isYesterday = date.toDateString() === yesterday.toDateString()
-  
+  const date = new Date(dateString);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const isToday = date.toDateString() === today.toDateString();
+  const isYesterday = date.toDateString() === yesterday.toDateString();
+
   if (isToday) {
-    return 'Today'
+    return "Today";
   } else if (isYesterday) {
-    return 'Yesterday'
+    return "Yesterday";
   } else {
-    const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' })
-    const dateFormatted = date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric' 
-    })
-    return `${dayOfWeek}, ${dateFormatted}`
+    const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "short" });
+    const dateFormatted = date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+    return `${dayOfWeek}, ${dateFormatted}`;
   }
-}
+};
 
 const formatTime = (dateString) => {
-  const date = new Date(dateString)
-  return date.toLocaleTimeString('en-US', { 
-    hour: '2-digit', 
-    minute: '2-digit',
-    hour12: true 
-  })
-}
+  const date = new Date(dateString);
+  return date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
 
 const getRowClass = (log, index) => {
-  const today = new Date().toDateString()
-  const logDate = new Date(log.time_in).toDateString()
-  const isToday = logDate === today
-  
+  const today = new Date().toDateString();
+  const logDate = new Date(log.time_in).toDateString();
+  const isToday = logDate === today;
+
   return {
-    'today-row': isToday,
-    'active-session': !log.time_out, // Session is still active
-    'completed-session': !!log.time_out // Session is completed
-  }
-}
+    "today-row": isToday,
+    "active-session": !log.time_out, // Session is still active
+    "completed-session": !!log.time_out, // Session is completed
+  };
+};
 
 const calculateSessionDuration = (log) => {
-  if (!log.time_in) return '-'
-  
-  const timeIn = new Date(log.time_in)
+  if (!log.time_in) return "-";
+
+  const timeIn = new Date(log.time_in);
   // For active sessions, use current time; for completed sessions, use time_out
-  const timeOut = log.time_out ? new Date(log.time_out) : new Date()
-  
+  const timeOut = log.time_out ? new Date(log.time_out) : new Date();
+
   // Calculate duration in milliseconds, then convert to hours
-  const durationMs = timeOut.getTime() - timeIn.getTime()
-  
-  if (durationMs < 0) return '-'
-  
+  const durationMs = timeOut.getTime() - timeIn.getTime();
+
+  if (durationMs < 0) return "-";
+
   // Convert to total minutes for more accurate calculation
-  const totalMinutes = Math.floor(durationMs / (1000 * 60))
-  const hours = Math.floor(totalMinutes / 60)
-  const minutes = totalMinutes % 60
-  
+  const totalMinutes = Math.floor(durationMs / (1000 * 60));
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
   if (hours === 0) {
-    return `${minutes}m`
+    return `${minutes}m`;
   } else if (minutes === 0) {
-    return `${hours}h`
+    return `${hours}h`;
   } else {
-    return `${hours}h ${minutes}m`
+    return `${hours}h ${minutes}m`;
   }
-}
+};
 
 const loadUserSchedules = async () => {
   try {
-    isLoadingSchedules.value = true
-    const userId = authStore.user.value?.id
+    isLoadingSchedules.value = true;
+    const userId = authStore.user.value?.id;
 
     if (!userId) {
-      console.error('No user ID found for schedules')
-      return
+      console.error("No user ID found for schedules");
+      return;
     }
 
     // Ensure we have a valid token
-    const hasValidToken = await authStore.ensureValidToken()
-    
+    const hasValidToken = await authStore.ensureValidToken();
+
     if (!hasValidToken) {
-      console.error('No valid authentication token found for schedules')
-      return
+      console.error("No valid authentication token found for schedules");
+      return;
     }
 
-    console.log('Loading schedules for user:', userId)
+    console.log("Loading schedules for user:", userId);
 
     // Get user's schedules
-    const schedules = await schedulesService.getUserSchedules(userId)
-    
-    // Sort schedules by day (Monday first)
-    userSchedules.value = schedulesService.sortSchedulesByDay(schedules)
+    const schedules = await schedulesService.getUserSchedules(userId);
 
-    console.log('Schedules loaded:', userSchedules.value)
+    // Sort schedules by day (Monday first)
+    userSchedules.value = schedulesService.sortSchedulesByDay(schedules);
+
+    console.log("Schedules loaded:", userSchedules.value);
   } catch (error) {
-    console.error('Error loading schedules:', error)
+    console.error("Error loading schedules:", error);
   } finally {
-    isLoadingSchedules.value = false
+    isLoadingSchedules.value = false;
   }
-}
+};
 
 const loadWalletData = async () => {
   try {
-    isLoadingWallet.value = true
-    const userId = authStore.user.value?.id
-    
+    isLoadingWallet.value = true;
+    const userId = authStore.user.value?.id;
+
     if (!userId) {
-      console.error('No user ID found for wallet')
-      return
+      console.error("No user ID found for wallet");
+      return;
     }
 
-    console.log('Loading wallet data for user:', userId)
+    console.log("Loading wallet data for user:", userId);
 
     // Load wallet balance first
-    const balanceData = await walletService.getUserWalletBalance(userId)
-    currentWalletBalance.value = balanceData.balance
-    hasEmployeeProfile.value = balanceData.profileId !== null
+    const balanceData = await walletService.getUserWalletBalance(userId);
+    currentWalletBalance.value = balanceData.balance;
+    hasEmployeeProfile.value = balanceData.profileId !== null;
 
     if (hasEmployeeProfile.value) {
       // Load wallet logs
-      await loadWalletLogs()
+      await loadWalletLogs();
     }
   } catch (error) {
-    console.error('Error loading wallet data:', error)
-    hasEmployeeProfile.value = false
-    currentWalletBalance.value = 0
+    console.error("Error loading wallet data:", error);
+    hasEmployeeProfile.value = false;
+    currentWalletBalance.value = 0;
   } finally {
-    isLoadingWallet.value = false
+    isLoadingWallet.value = false;
   }
-}
+};
 
 const loadWalletLogs = async () => {
   try {
-    isLoadingWalletLogs.value = true
-    const userId = authStore.user.value?.id
-    
+    isLoadingWalletLogs.value = true;
+    const userId = authStore.user.value?.id;
+
     if (!userId) {
-      console.error('No user ID found for wallet logs')
-      return
+      console.error("No user ID found for wallet logs");
+      return;
     }
 
-    console.log('Loading wallet logs for user:', userId)
+    console.log("Loading wallet logs for user:", userId);
 
     // Get wallet logs with pagination
-    const result = await walletService.getUserWalletLogs(userId, currentWalletPage.value, walletItemsPerPage)
-    
-    allWalletLogs.value = result.data
-    walletTotalCount.value = result.totalCount
+    const result = await walletService.getUserWalletLogs(
+      userId,
+      currentWalletPage.value,
+      walletItemsPerPage
+    );
+
+    allWalletLogs.value = result.data;
+    walletTotalCount.value = result.totalCount;
   } catch (error) {
-    console.error('Error loading wallet logs:', error)
-    allWalletLogs.value = []
-    walletTotalCount.value = 0
+    console.error("Error loading wallet logs:", error);
+    allWalletLogs.value = [];
+    walletTotalCount.value = 0;
   } finally {
-    isLoadingWalletLogs.value = false
+    isLoadingWalletLogs.value = false;
   }
-}
+};
 
 const validateWithdrawAmount = () => {
-  const validation = walletService.validateWithdrawAmount(withdrawAmount.value, currentWalletBalance.value)
-  withdrawError.value = validation.valid ? '' : validation.message
-}
+  const validation = walletService.validateWithdrawAmount(
+    withdrawAmount.value,
+    currentWalletBalance.value
+  );
+  withdrawError.value = validation.valid ? "" : validation.message;
+};
 
 const closeWithdrawModal = () => {
-  showWithdrawModal.value = false
-  withdrawAmount.value = ''
-  withdrawReason.value = ''
-  withdrawError.value = ''
-}
+  showWithdrawModal.value = false;
+  withdrawAmount.value = "";
+  withdrawReason.value = "";
+  withdrawError.value = "";
+};
 
 const processWithdraw = async () => {
   try {
-    isProcessingWithdraw.value = true
-    
+    isProcessingWithdraw.value = true;
+
     // Validate amount one more time
-    const validation = walletService.validateWithdrawAmount(withdrawAmount.value, currentWalletBalance.value)
+    const validation = walletService.validateWithdrawAmount(
+      withdrawAmount.value,
+      currentWalletBalance.value
+    );
     if (!validation.valid) {
-      withdrawError.value = validation.message
-      return
+      withdrawError.value = validation.message;
+      return;
     }
 
     // Create withdrawal record in wallet_log
     const withdrawalRecord = await walletService.createWithdrawal(
       authStore.user.value?.id,
       withdrawAmount.value,
-      withdrawReason.value
-    )
+      withdrawType.value
+    );
 
-    alert('Withdrawal request has been submitted successfully! The amount will be processed and reflected in your balance shortly.')
-    
-    closeWithdrawModal()
-    
+    alert(
+      "Withdrawal request has been submitted successfully! The amount will be processed and reflected in your balance shortly."
+    );
+
+    closeWithdrawModal();
+
     // Reload wallet data to reflect the new withdrawal record
-    await loadWalletData()
-
+    await loadWalletData();
   } catch (error) {
-    console.error('Error processing withdrawal:', error)
-    alert('Failed to process withdrawal. Please try again.')
+    console.error("Error processing withdrawal:", error);
+    alert("Failed to process withdrawal. Please try again.");
   } finally {
-    isProcessingWithdraw.value = false
+    isProcessingWithdraw.value = false;
   }
-}
+};
 
 const goToWalletPage = async (page) => {
   try {
     if (page < 1 || page > walletTotalPages.value) {
-      return // Invalid page
+      return; // Invalid page
     }
-    
-    currentWalletPage.value = page
-    await loadWalletLogs()
+
+    currentWalletPage.value = page;
+    await loadWalletLogs();
   } catch (error) {
-    console.error('Error loading wallet page:', error)
+    console.error("Error loading wallet page:", error);
   }
-}
+};
 
 const loadUserTimeData = async () => {
   try {
-    isLoading.value = true
-    const userId = authStore.user.value?.id
+    isLoading.value = true;
+    const userId = authStore.user.value?.id;
 
     if (!userId) {
-      console.error('No user ID found')
-      return
+      console.error("No user ID found");
+      return;
     }
 
     // Ensure we have a valid token
-    const hasValidToken = await authStore.ensureValidToken()
-    
+    const hasValidToken = await authStore.ensureValidToken();
+
     if (!hasValidToken) {
-      console.error('No valid authentication token found')
-      window.location.href = '/login'
-      return
+      console.error("No valid authentication token found");
+      window.location.href = "/login";
+      return;
     }
 
-    console.log('Loading time data for user:', userId)
+    console.log("Loading time data for user:", userId);
 
     // Get user's time logs
-    const timeLogs = await timeLogsService.getUserTimeLogs(userId)
-    
+    const timeLogs = await timeLogsService.getUserTimeLogs(userId);
+
     // Store all logs for the table
-    allTimeLogs.value = timeLogs
-    
-    const latestLog = timeLogs.length > 0 ? timeLogs[0] : null
+    allTimeLogs.value = timeLogs;
+
+    const latestLog = timeLogs.length > 0 ? timeLogs[0] : null;
 
     // Update current status
-    currentStatus.value = timeLogsService.getCurrentStatus(latestLog)
+    currentStatus.value = timeLogsService.getCurrentStatus(latestLog);
 
     // Calculate today's stats
-    todayStats.value = timeLogsService.calculateTodayStats(timeLogs)
+    todayStats.value = timeLogsService.calculateTodayStats(timeLogs);
 
-    console.log('Time data loaded:', { 
-      currentStatus: currentStatus.value, 
+    console.log("Time data loaded:", {
+      currentStatus: currentStatus.value,
       todayStats: todayStats.value,
-      totalLogs: timeLogs.length 
-    })
+      totalLogs: timeLogs.length,
+    });
   } catch (error) {
-    console.error('Error loading time data:', error)
-    
+    console.error("Error loading time data:", error);
+
     // If it's an auth error, redirect to login
-    if (error.message.includes('401') || error.message.includes('Unauthorized') || error.message.includes('authentication')) {
-      console.log('Authentication error, redirecting to login')
-      localStorage.removeItem('directus_token')
-      window.location.href = '/login'
+    if (
+      error.message.includes("401") ||
+      error.message.includes("Unauthorized") ||
+      error.message.includes("authentication")
+    ) {
+      console.log("Authentication error, redirecting to login");
+      localStorage.removeItem("directus_token");
+      window.location.href = "/login";
     }
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 const handleClockAction = async () => {
   try {
-    const userId = authStore.user.value?.id
-    
+    const userId = authStore.user.value?.id;
+
     if (!userId) {
-      console.error('No user ID found')
-      return
+      console.error("No user ID found");
+      return;
     }
 
     // Ensure we have a valid token before proceeding
-    const hasValidToken = await authStore.ensureValidToken()
-    
+    const hasValidToken = await authStore.ensureValidToken();
+
     if (!hasValidToken) {
-      console.error('No valid authentication token found')
-      window.location.href = '/login'
-      return
+      console.error("No valid authentication token found");
+      window.location.href = "/login";
+      return;
     }
 
-    const actionText = currentStatus.value.isClockedIn ? 'Clocking Out' : 'Clocking In'
-    console.log(`${actionText}...`)
-    
+    const actionText = currentStatus.value.isClockedIn
+      ? "Clocking Out"
+      : "Clocking In";
+    console.log(`${actionText}...`);
+
     // Use the new handleClockAction method that automatically determines clock in/out
-    const result = await timeLogsService.handleClockAction(userId)
-    console.log('Clock action result:', result)
-    
+    const result = await timeLogsService.handleClockAction(userId);
+    console.log("Clock action result:", result);
+
     // Reload data to update status
-    await loadUserTimeData()
-    
-    console.log(`${result.action === 'clock_in' ? 'Clock In' : 'Clock Out'} completed successfully!`)
-    
+    await loadUserTimeData();
+
+    console.log(
+      `${
+        result.action === "clock_in" ? "Clock In" : "Clock Out"
+      } completed successfully!`
+    );
   } catch (error) {
-    console.error('Error with clock action:', error)
-    
+    console.error("Error with clock action:", error);
+
     // If it's an auth error, redirect to login
-    if (error.message.includes('401') || error.message.includes('Unauthorized') || error.message.includes('authentication')) {
-      console.log('Authentication error, redirecting to login')
-      localStorage.removeItem('directus_token')
-      window.location.href = '/login'
+    if (
+      error.message.includes("401") ||
+      error.message.includes("Unauthorized") ||
+      error.message.includes("authentication")
+    ) {
+      console.log("Authentication error, redirecting to login");
+      localStorage.removeItem("directus_token");
+      window.location.href = "/login";
     } else {
       // Show user-friendly error
-      alert(`Failed to ${currentStatus.value.isClockedIn ? 'clock out' : 'clock in'}. Please try again.`)
+      alert(
+        `Failed to ${
+          currentStatus.value.isClockedIn ? "clock out" : "clock in"
+        }. Please try again.`
+      );
     }
   }
-}
+};
 
 onMounted(async () => {
-  console.log('Dashboard mounted, checking authentication...')
-  
+  console.log("Dashboard mounted, checking authentication...");
+
   // Check if user is authenticated
   if (!authStore.user.value) {
-    console.log('No user found, checking auth...')
-    const isAuthenticated = await authStore.checkAuth()
-    
+    console.log("No user found, checking auth...");
+    const isAuthenticated = await authStore.checkAuth();
+
     if (!isAuthenticated) {
-      console.log('Authentication failed, redirecting to login')
-      window.location.href = '/login'
-      return
+      console.log("Authentication failed, redirecting to login");
+      window.location.href = "/login";
+      return;
     }
   }
-  
+
   // Load time tracking data
   if (authStore.user.value) {
-    await loadUserTimeData()
+    await loadUserTimeData();
   }
-})
+});
 </script>
 
 <style scoped>
@@ -1406,8 +1561,13 @@ onMounted(async () => {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 /* Row styling for different session states */
@@ -1542,365 +1702,365 @@ onMounted(async () => {
   font-weight: 600;
 }
 
-  .day-hours {
-    color: #6b7280;
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
+.day-hours {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
 
-  /* Wallet Styles */
-  .wallet-content {
-    width: 100%;
-  }
+/* Wallet Styles */
+.wallet-content {
+  width: 100%;
+}
 
-  .wallet-dashboard {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
+.wallet-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
 
-  .wallet-summary {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 1.5rem;
-  }
+.wallet-summary {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
 
-  .balance-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    text-align: center;
-  }
+.balance-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+}
 
-  .balance-card .card-title {
-    color: white;
-  }
+.balance-card .card-title {
+  color: white;
+}
 
-  .balance-amount {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin: 1rem 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+.balance-amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 1rem 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-  .balance-subtitle {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.875rem;
-    margin: 0;
-  }
+.balance-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  margin: 0;
+}
 
-  .actions-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
+.actions-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
-  .wallet-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
+.wallet-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
 
-  .wallet-logs-section {
-    width: 100%;
-  }
+.wallet-logs-section {
+  width: 100%;
+}
 
-  .wallet-logs-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+.wallet-logs-table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-  .wallet-logs-table th {
-    background: #f9fafb;
-    padding: 0.75rem 1rem;
-    text-align: left;
-    font-weight: 600;
-    color: #374151;
-    border-bottom: 1px solid #e5e7eb;
-    font-size: 0.875rem;
-  }
+.wallet-logs-table th {
+  background: #f9fafb;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+}
 
-  .wallet-logs-table td {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #f3f4f6;
-    color: #6b7280;
-    font-size: 0.875rem;
-  }
+.wallet-logs-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
 
-  .wallet-logs-table tr:hover {
-    background: #f9fafb;
-  }
+.wallet-logs-table tr:hover {
+  background: #f9fafb;
+}
 
-  .date-time {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
+.date-time {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
 
-  .date {
-    font-weight: 500;
-    color: #374151;
-  }
+.date {
+  font-weight: 500;
+  color: #374151;
+}
 
-  .time {
-    font-size: 0.75rem;
-    color: #9ca3af;
-  }
+.time {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
 
-  .transaction-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.025em;
-  }
+.transaction-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
 
-  .transaction-badge.earning {
-    background: #d1fae5;
-    color: #065f46;
-  }
+.transaction-badge.earning {
+  background: #d1fae5;
+  color: #065f46;
+}
 
-  .transaction-badge.withdrawal {
-    background: #fee2e2;
-    color: #991b1b;
-  }
+.transaction-badge.withdrawal {
+  background: #fee2e2;
+  color: #991b1b;
+}
 
-  .transaction-badge.adjustment {
-    background: #fef3c7;
-    color: #92400e;
-  }
+.transaction-badge.adjustment {
+  background: #fef3c7;
+  color: #92400e;
+}
 
-  .transaction-icon {
-    width: 12px;
-    height: 12px;
-  }
+.transaction-icon {
+  width: 12px;
+  height: 12px;
+}
 
-  .amount {
-    font-weight: 600;
-  }
+.amount {
+  font-weight: 600;
+}
 
-  .amount.positive {
-    color: #059669;
-  }
+.amount.positive {
+  color: #059669;
+}
 
-  .amount.negative {
-    color: #dc2626;
-  }
+.amount.negative {
+  color: #dc2626;
+}
 
-  .wallet-value {
-    font-weight: 600;
-    color: #059669;
-    font-size: 1rem;
-  }
+.wallet-value {
+  font-weight: 600;
+  color: #059669;
+  font-size: 1rem;
+}
 
-  .remarks {
-    color: #6b7280;
-    font-style: italic;
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+.remarks {
+  color: #6b7280;
+  font-style: italic;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-  .remarks:empty::before {
-    content: '-';
-    color: #9ca3af;
-    font-style: normal;
-  }
+.remarks:empty::before {
+  content: "-";
+  color: #9ca3af;
+  font-style: normal;
+}
 
-  /* Modal Styles */
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    padding: 1rem;
-  }
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+}
 
-  .modal-content {
-    background: white;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 480px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  }
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
 
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid #e5e7eb;
-  }
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
 
-  .modal-header h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin: 0;
-  }
+.modal-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
 
-  .modal-close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 6px;
-    transition: all 0.2s;
-  }
+.modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
 
-  .modal-close:hover {
-    background: #f3f4f6;
-  }
+.modal-close:hover {
+  background: #f3f4f6;
+}
 
-  .modal-close svg {
-    width: 20px;
-    height: 20px;
-    color: #6b7280;
-  }
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+  color: #6b7280;
+}
 
-  .modal-body {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
+.modal-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
 
-  .current-balance {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background: #f9fafb;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-  }
+.current-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
 
-  .balance-label {
-    font-weight: 500;
-    color: #374151;
-  }
+.balance-label {
+  font-weight: 500;
+  color: #374151;
+}
 
-  .current-balance .balance-amount {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #667eea;
-  }
+.current-balance .balance-amount {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #667eea;
+}
 
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
-  .form-group label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-  }
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
 
-  .form-input {
-    padding: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 0.925rem;
-    transition: all 0.2s;
-    background: white;
-    color: #1f2937;
-  }
+.form-input {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.925rem;
+  transition: all 0.2s;
+  background: white;
+  color: #1f2937;
+}
 
-  .form-input:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  }
+.form-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
 
-  .input-with-prefix {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
+.input-with-prefix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 
-  .input-prefix {
-    position: absolute;
-    left: 0.75rem;
-    color: #6b7280;
-    font-weight: 500;
-    z-index: 1;
-    pointer-events: none;
-  }
+.input-prefix {
+  position: absolute;
+  left: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+  z-index: 1;
+  pointer-events: none;
+}
 
-  .form-input.with-prefix {
-    padding-left: 2rem;
-  }
+.form-input.with-prefix {
+  padding-left: 2rem;
+}
 
-  .error-message {
-    color: #dc2626;
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
+.error-message {
+  color: #dc2626;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
 
-  .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    padding: 1.5rem;
-    border-top: 1px solid #e5e7eb;
-  }
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
 
-  .btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 0.925rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-  }
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.925rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
 
-  .btn.primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-  }
+.btn.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
 
-  .btn.secondary {
-    background: #f3f4f6;
-    color: #374151;
-    border: 1px solid #d1d5db;
-  }
+.btn.secondary {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
 
-  .btn.primary:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-  }
+.btn.primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
 
-  .btn.secondary:hover:not(:disabled) {
-    background: #e5e7eb;
-    transform: translateY(-1px);
-  }
+.btn.secondary:hover:not(:disabled) {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
 
-  .btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none !important;
-    box-shadow: none !important;
-  }/* Mobile Styles */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+} /* Mobile Styles */
 @media (max-width: 768px) {
   .mobile-header {
     display: flex;
@@ -1985,7 +2145,7 @@ onMounted(async () => {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .time-range {
     gap: 0.75rem;
   }
